@@ -1,5 +1,6 @@
 #!/usr/bin/python3
-import  rospy
+from SETTINGS import * 
+import rospy
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import LaserScan
 
@@ -8,9 +9,9 @@ class Brain:
     def __init__(self, verbose = True):
         self.commandPublisher = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
         self.cmd = Twist()
-        self.verbose = verbose  
+        self.verbose = verbose
 
-        self.vitesse = 1
+        self.vitesse = 2
 
         self.isTurning = False
         self.turningCount = 0
@@ -19,12 +20,18 @@ class Brain:
         rospy.init_node('move', anonymous=True)
         rospy.Subscriber("/scan", LaserScan, self.scanner)
         rospy.Timer(rospy.Duration(0.1), self.run, oneshot=False )
-
+    
     def getROI(self, data):
         return data.ranges[355:365]
 
+    def setAmountRotation(self):
+        self.maxTurning = random.randint(30, 60)
+        if(self.verbose):
+            print(f"amount of turn : {self.maxTurning}")
+
+
     def shouldTurn(self, roi):
-        return min(roi) < 0.4
+        return min(roi) < 2
 
     def handleTurning(self):
         if(self.isTurning):
@@ -45,6 +52,7 @@ class Brain:
 
         if(self.shouldTurn(roi) and not self.isTurning):
             self.isTurning = True
+            self.setAmountRotation()
             if(self.verbose):
                 print("start turning")
 
