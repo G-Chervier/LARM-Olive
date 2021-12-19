@@ -9,7 +9,7 @@
 	    <arg name="yaw" value="2.86" />
     </include>
     
-    <node pkg="my_awesome_pkg" type="main.py" name="main" output="screen"></node>
+    <node pkg="grp-olive" type="main.py" name="main" output="screen"></node>
 
 
 </launch>
