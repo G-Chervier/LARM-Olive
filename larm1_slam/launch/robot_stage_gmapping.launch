@@ -19,7 +19,6 @@
 	<!-- Start Gmapping -->
 	<node pkg="gmapping" type="slam_gmapping" name="gmapping_node" output="screen" >
 		<remap from="scan" to="/base_scan" />
-		<remap from="/stage/odom" to="/odom" />
 		<param name="odom_frame" value="/odom" />
 	</node>
 </launch>
