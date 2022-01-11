@@ -1,18 +1,31 @@
 #!/usr/bin/env python3
+from threading import local
 import rospy
-from std_msgs.msg import String
+import tf
+from geometry_msgs.msg import *
 
-def callback(data):
-    rospy.loginfo("I Got a goal")
-    rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data)
+
+
+class myNode:
+    def __init__(self):
+        rospy.init_node('move_to', anonymous=True)
+        self.tfListener = tf.TransformListener()
+        self.sub = rospy.Subscriber("/move_base_simple/goal", PoseStamped, self.callback)
+        self.pub = rospy.Publisher(
+            '/cmd_vel_mux/input/navi',
+            Twist, queue_size=10
+        )
+        rospy.Timer( rospy.Duration(0.1), self.callback2, oneshot=False )
+    def callback(self, goal):
+        rospy.loginfo("I Got a goal : ")
+        print(goal)
+        local_goal= self.tfListener.transformPose("/base_footprint", goal)
+        print(local_goal)
+
+    def callback2(self,data):
+        #Do some work
+        a = data
     
-def listener():
-    rospy.init_node('listener', anonymous=True)
 
-    sub = rospy.Subscriber("/goal", String, callback)
-
-    # spin() simply keeps python from exiting until this node is stopped
-    rospy.spin()
-
-if __name__ == '__main__':
-    listener()
+myNode()
+rospy.spin()
