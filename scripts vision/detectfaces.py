@@ -1,7 +1,7 @@
 import cv2
 
 cap = cv2.VideoCapture(0)
-classifierFace = cv2.CascadeClassifier('/home/gaetan/visionPython/classifier_training/opencv-haar-classifier-training/classifier/cascade.xml')
+classifierFace = cv2.CascadeClassifier('/home/gaetan/visionPython/classifier_training/Test_LBP/data/cascade.xml')
 
 while True:
     ret, frame = cap.read()

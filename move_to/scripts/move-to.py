@@ -16,16 +16,20 @@ class myNode:
             Twist, queue_size=10
         )
         rospy.Timer( rospy.Duration(0.1), self.callback2, oneshot=False )
+    
     def callback(self, goal):
         rospy.loginfo("I Got a goal : ")
         print(goal)
-        local_goal= self.tfListener.transformPose("/base_footprint", goal)
-        print(local_goal)
+        self.local_goal= self.tfListener.transformPose("/base_footprint", goal)
+        print(self.local_goal)
 
     def callback2(self,data):
         #Do some work
-        a = data
-    
+        cmd= Twist()
+        cmd.linear.x= 0.1
+        cmd.angular.z = self.local_goal.pose.orientation.z
+        self.pub.publish(cmd)
+        
 
 myNode()
 rospy.spin()
