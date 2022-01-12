@@ -1,9 +1,0 @@
-<launch>
-
-    <include file="$(find turtlebot_bringup)/launch/minimal.launch" />
-    <node type="urg_node" name="scanner" pkg="urg_node" />  
-    
-    <node pkg="grp-olive" type="main.py" name="main" output="screen"></node>
-
-
-</launch>
