@@ -1,0 +1,14 @@
+<launch>
+
+	<arg name="world_file" value="$(find stage_ros)/world/willow-erratic.world" />
+	
+	<!-- Start Rviz -->
+	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find turtlebot_stage)/rviz/robot_navigation.rviz"/>
+
+	<!-- Start Gmapping -->
+	<node pkg="gmapping" type="slam_gmapping" name="gmapping_node" output="screen" >
+		<remap from="scan" to="/base_scan" />
+		<param name="odom_frame" value="/odom" />
+	</node>
+	
+</launch>
