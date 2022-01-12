@@ -1,0 +1,18 @@
+<launch>
+	<arg name="world_file" value="$(find stage_ros)/world/willow-erratic.world" />
+	
+	<!-- Start Stage -->
+	<node pkg="stage_ros" type="stageros" name="stage" args="$(arg world_file)"/>
+
+	<!-- Start Rviz -->
+	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find turtlebot_stage)/rviz/robot_navigation.rviz"/>
+
+	<!-- Setup Keyboard teleop -->
+	<include file="$(find turtlebot_teleop)/launch/keyboard_teleop.launch"/>
+	
+	<!-- Start Gmapping -->
+	<node pkg="gmapping" type="slam_gmapping" name="gmapping_node" output="screen" >
+		<remap from="scan" to="/base_scan" />
+		<param name="odom_frame" value="/odom" />
+	</node>
+</launch>
