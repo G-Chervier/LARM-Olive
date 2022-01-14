@@ -9,5 +9,7 @@
 		
 	<!-- Start Rviz -->
 		<node name="rviz" pkg="rviz" type="rviz" args="-d $(find grp-olive)/rviz/challenge2.rviz"/>
+		
+	<node pkg="grp-olive" type="main.py" name="main" output="screen"></node>
 			
 </launch>
