@@ -1,10 +1,11 @@
 <launch>
+	
+	<param name="/use_sim_time" value="true" />
+	
 	<!-- Start Gmapping -->
 		<node pkg="gmapping" type="slam_gmapping" name="gmapping_node" output="screen" >
 		</node>
 	<!-- Start Rviz -->
 		<node name="rviz" pkg="rviz" type="rviz" args="-d $(find grp-olive)/rviz/challenge2.rviz"/>
-		
+			
 </launch>
-
-
