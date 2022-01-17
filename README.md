@@ -1,11 +1,15 @@
 # grp-olive Challenge 2
 ## Sommaire
 - [Présentation du projet](#Présentation-du-projet)
+- [Elements requis](#Elements-requis)
 - [Présentation du code](#Présentation-du-code)
 - [Résultats](#Résultats)
 - [Perspectives d'amélioration](#Perspectives-d'amélioration)
 ## Présentation du projet
 L'objectif de ce challenge est de démontrer la capacité d'un robot à cartographier un environnement et à retrouver des objets spécifiques dans ce dernier.
+
+## Elements requis
+Il faut au préalable avoir installé Gmapping ainsi que le package mb6-tbot
 ## Présentation du code
 
 ### Présentation du fichier de lancement (launchfile)
