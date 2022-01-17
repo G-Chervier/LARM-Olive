@@ -11,11 +11,11 @@ L'objectif de ce challenge est de démontrer la capacité d'un robot à cartogra
 ### Présentation du fichier de lancement (launchfile)
 On a tout d'abord spécifié l'utilisation d'une horloge simulée afin de jouer un rosbag avec l'option "clock".
 ```bash
-param name="/use_sim_time" value="true" />
+<param name="/use_sim_time" value="true" />
 ```
 On lance aussi un "gmapping" afin de cartopgraphier l'environnement.
 ```bash
-node pkg="gmapping" type="slam_gmapping" name="gmapping_node" output="screen" >
+<node pkg="gmapping" type="slam_gmapping" name="gmapping_node" output="screen" >
 ```
 De plus, on démarre automatiquement le logiciel rViz dans la configuration spécifiée afin d'observer la construction de la carte et le placement des marqueurs.
 ```bash
