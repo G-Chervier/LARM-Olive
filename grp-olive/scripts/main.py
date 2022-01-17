@@ -9,7 +9,6 @@ from std_msgs.msg import ColorRGBA
 import cv2
 from cv_bridge import CvBridge
 import os
-import tf
 
 class MyNode:
     def __init__(self):
@@ -21,6 +20,7 @@ class MyNode:
         )
         dirname = os.path.dirname(__file__)
         filename = os.path.join(dirname, 'cascade.xml')
+
         self.classifier = cv2.CascadeClassifier(filename)
         self.marker= Marker()
 
@@ -28,14 +28,14 @@ class MyNode:
         bridge = CvBridge()
         frame = bridge.imgmsg_to_cv2(img, desired_encoding='bgr8')
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        objs = self.classifier.detectMultiScale(frame, 1.05, 7)
+        objs = self.classifier.detectMultiScale(frame, 1.1, 3)
 
         for (x, y, w, h) in objs:
             print('I detect one')
             cv2.rectangle(frame, (x,y), (x+w, y+h), (255,0,0), 2)
             self.publish()
-        cv2.imshow('bot view', gray)
-        cv2.imshow('frame', frame)
+        #cv2.imshow('bot view', gray)
+        #cv2.imshow('frame', frame)
         if cv2.waitKey(1)&0xFF==ord('q'):
             cv2.destroyAllWindows()
 

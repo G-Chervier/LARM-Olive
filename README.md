@@ -24,44 +24,72 @@ De plus, on démarre automatiquement le logiciel rViz dans la configuration spé
 
 ```python
 #!/usr/bin/env python3
-from threading import local
+
 import rospy
-import tf
+from visualization_msgs.msg import Marker
+from sensor_msgs.msg import Image
+from nav_msgs.msg import Odometry
 from geometry_msgs.msg import *
+from std_msgs.msg import ColorRGBA
+import cv2
+from cv_bridge import CvBridge
+import os
 ```
 Les premières lignes servent à importer les librairies et classes nécessaires au projet.
 ```python
-myNode()
+rospy.init_node('bottle_detector',anonymous=True)
+myNode = MyNode()
 rospy.spin()
 ```
-Ces lignes sont les dernières du code : on instancie un objet myNode que nous avons défini plus tôt, puis on recommence grâce à la méthode spin() de la librairie ros.
+Ces lignes sont les dernières du code : on commence par initialiser notre node sous le nom "bottle_detector". Ensuite on instancie un objet myNode que nous avons défini plus tôt, puis on lance la boucle infinie de gestion du robot grâce à la méthode spin() de la librairie rospy.
 ```python
-class myNode:
-    def __init__(self):
-        rospy.init_node('move_to', anonymous=True)
-        self.tfListener = tf.TransformListener()
-        self.sub = rospy.Subscriber("/move_base_simple/goal", PoseStamped, self.callback)
+def __init__(self):
+        self.odom = rospy.Subscriber("/odom",Odometry,self.getPose)
+        self.sub = rospy.Subscriber("camera/color/image_raw",Image,self.detection)
         self.pub = rospy.Publisher(
-            '/cmd_vel_mux/input/navi',
-            Twist, queue_size=10
+            '/bottle',
+            Marker, queue_size=5
         )
-        rospy.Timer( rospy.Duration(0.1), self.callback2, oneshot=False )
+        dirname = os.path.dirname(__file__)
+        filename = os.path.join(dirname, 'cascade.xml')
+        self.classifier = cv2.CascadeClassifier(filename)
+        self.marker= Marker()
+
 ```
-L'instanciation de la classe myNode commence par une commande init_node qui permet au noeud de se présenter sur le roscore. Ensuite vient la commande Subscriber qui permet d'appeler la méthode callback de notre classe myNode à chaque changement de valeur sur le topic "/move_base_simple/goal". La commande Publisher indique au roscore que les données vont être publiées sur le topic '/cmd_vel_mux/input/navi'. Ce topic est écouté par le robot, il interprètera des données de type Twist, qui est une classe contenant un vecteur de 3 dimensions donnant les vitesses de translation et un second vecteur de 3 dimensions donnant les vitesses angulaires. On appelle finalement la méthode callback2 toutes les 0.1s à l'aide de la commande Timer.
+L'instanciation de la classe myNode commence par créer deux Subscriber qui vont permettre de récupérer un objet "Odometry" du robot via le topic 
+/odom puis on envoie les données dans la fonction getPose. Le second Subscriber se connecte au topic /camera/color/image_raw afin de récupérer l'image de la caméra et d'envoyer les données dans la foncition detection de notre classe.  La commande Publisher indique au roscore que les données vont être publiées sur le topic '/bottle'. Ce topic est écouté par le robot, il interprètera des données de type Marker, qui est une classe contenant la 'pose' du robot, c'est à dire position+orientation. Ensuite, on récupère les données du fichier cascade.xml situé dans le même dossier que ce script. on crée ensuite un objet classifier qui sera utilisé dans une autre fonction. On procède de même avec la création d'un objet Marker, qui servira à faire le lien entre deux fonctions. 
 ```python
-    def callback(self, goal):
-        rospy.loginfo("I Got a goal : ")
-        print(goal)
-        self.local_goal= self.tfListener.transformPose("/base_footprint", goal)
-        print(self.local_goal)
+    def detection(self,img):
+        bridge = CvBridge()
+        frame = bridge.imgmsg_to_cv2(img, desired_encoding='bgr8')
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        objs = self.classifier.detectMultiScale(frame, 1.1, 0)
+
+        for (x, y, w, h) in objs:
+            cv2.rectangle(frame, (x,y), (x+w, y+h), (255,0,0), 2)
+            self.publish()
+        #cv2.imshow('bot view', gray)
+        #cv2.imshow('frame', frame)
+        if cv2.waitKey(1)&0xFF==ord('q'):
+            cv2.destroyAllWindows()
 ```
+La fonction Detection récupère l'image de la caméra et utilise la cascade calculée afin de déterminer les bouteilles sur les images. Si un objet a été détecté, alors on appelle la fonction 'publish' de notre classe
 ```python
-    def callback2(self,data):
-        #Do some work
-        cmd= Twist()
-        cmd.linear.x= 0.1
-        cmd.angular.z = self.local_goal.pose.orientation.z
+    def getPose(self,data):
+        self.marker.pose = data.pose.pose
+
+    def publish(self):
+        cmd = Marker(
+                type=Marker.CUBE,
+                id=0,
+                lifetime=rospy.Duration(0.5),
+                pose=self.marker.pose,
+                scale=Vector3(0.1, 0.1, 0.1),
+                color=ColorRGBA(0.0, 1.0, 0.0, 0.8))
+        cmd.header.frame_id='map'
         self.pub.publish(cmd)
 ```
+La fonction getPose permet de récupérer et stocker temporairement la pose du robot afin de permettre à 'publish' de récupérer cette pose et d'envoyer un objet Marker d'une forme cubique de 0.1 de côté et ainsi l'envoyer sur le topic /bottle.
 ## Résultats
 ## Perspectives d'amélioration
+Pour le moment le robot ne détecte pas que des bouteilles, il y a aussi quelques erreurs. Une bonne perspective serait de mieux l'entraîner à détecter ces bouteilles.
