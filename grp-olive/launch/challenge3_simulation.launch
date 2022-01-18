@@ -1,9 +1,6 @@
 <launch>
-
-	<param name="/use_sim_time" value="true" />
-	<include file="$(find tbot_bringup)/launch/minimal.launch"/>
-	<!-- Start Gmapping -->
-		
+	
+	<!-- Start Gmapping -->		
 	<node pkg="gmapping" type="slam_gmapping" name="gmapping_node" output="screen" >
 		<param name="maxUrange" value="4.0"/> <!-- limit laser range to 4 meters -->
 		<param name="odom_frame" value="/odom"/>
@@ -11,6 +8,17 @@
 	
 	<!-- Start Rviz -->
 	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find grp-olive)/rviz/challenge2.rviz" />
+	
 	<node pkg="grp-olive" type="main.py" name="main" output="screen"></node>
+	
+	<!-- Start Gazebo -->
+	<include file="$(find tbot_gazebo)/launch/start_world.launch">
+		<arg name="world_file" value="$(find larm)/models/challenge-1.world" />
+	</include>
+    	<include file="$(find tbot_gazebo)/launch/spawn_tbot.launch">
+	    <arg name="x" value="-3.32" />
+	    <arg name="y" value="-2.95" />
+	    <arg name="yaw" value="2.86" />
+    	</include>
 			
 </launch>
