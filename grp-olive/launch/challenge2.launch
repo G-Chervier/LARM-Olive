@@ -8,9 +8,13 @@
 		<param name="maxUrange" value="4.0"/> <!-- limit laser range to 4 meters -->
 		<param name="odom_frame" value="/odom"/>
 	</node>
-	
+
+	<include file="$(find realsense2_camera)/launch/rs_camera.launch" >
+		<param name="align_depth" value="true"/>
+	</include>
 	<!-- Start Rviz -->
 	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find grp-olive)/rviz/challenge2.rviz" />
 	<node pkg="grp-olive" type="main.py" name="main" output="screen"></node>
-			
+	
+
 </launch>
