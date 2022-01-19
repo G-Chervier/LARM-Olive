@@ -1,4 +1,4 @@
-# grp-olive Challenge 2
+# grp-olive Challenge 3
 ## Sommaire
 - [Présentation du projet](#Présentation-du-projet)
 - [Elements requis](#Elements-requis)
