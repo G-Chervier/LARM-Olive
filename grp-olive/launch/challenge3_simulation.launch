@@ -1,0 +1,31 @@
+<launch>
+	
+	<!-- Start Gmapping -->		
+	<node pkg="gmapping" type="slam_gmapping" name="gmapping_node" output="screen" >
+		<param name="maxUrange" value="4.0"/> <!-- limit laser range to 4 meters -->
+		<param name="odom_frame" value="/odom"/>
+	</node>
+
+	<include file="$(find realsense2_camera)/launch/rs_camera.launch" >
+		<param name="align_depth" value="true"/>
+	</include>
+	<!-- Start Rviz -->
+	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find grp-olive)/rviz/challenge2.rviz" />
+	
+	<node pkg="grp-olive" type="main.py" name="main" output="screen"></node>
+	
+<<<<<<< HEAD:grp-olive/launch/challenge2.launch
+
+=======
+	<!-- Start Gazebo -->
+	<include file="$(find tbot_gazebo)/launch/start_world.launch">
+		<arg name="world_file" value="$(find larm)/models/challenge-1.world" />
+	</include>
+    	<include file="$(find tbot_gazebo)/launch/spawn_tbot.launch">
+	    <arg name="x" value="-3.32" />
+	    <arg name="y" value="-2.95" />
+	    <arg name="yaw" value="2.86" />
+    	</include>
+			
+>>>>>>> d89904adc2fc2918b8ed41101b9b9b15362c39da:grp-olive/launch/challenge3_simulation.launch
+</launch>

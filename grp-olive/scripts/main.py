@@ -30,6 +30,8 @@ class Bottle: #Checks if a bottle is on the view of the camera and send a topic 
                 scale=Vector3(0.1, 0.1, 0.1),
                 color=ColorRGBA(0.0, 1.0, 0.0, 0.8))
         self.i = 97
+        self.objx = 0
+        self.objy = 0
 
     def souris(self, event, x, y, flags, param):
         if event==cv2.EVENT_LBUTTONDOWN:
@@ -38,14 +40,12 @@ class Bottle: #Checks if a bottle is on the view of the camera and send a topic 
             self.i-=1
 
         #Camera angle = 87.5
+        #voir si c'est vraiment une bouteille (rester sur image >10frames)
 
     def coords(self,img):
         bridge = CvBridge()
-        frame = bridge.imgmsg_to_cv2(img,"mono16") #convert the image from topic sent to readable image for opencv
-        print(img)
-        print("-------------------")
-        #cv2.imshow('dist', frame)
-
+        frame = bridge.imgmsg_to_cv2(img,desired_encoding="passthrough") #convert the image from topic sent to readable image for opencv
+        print(frame[self.objy,self.objx])
 
     def detection(self,img):
         bridge = CvBridge()     
@@ -54,6 +54,8 @@ class Bottle: #Checks if a bottle is on the view of the camera and send a topic 
         hsv = cv2.GaussianBlur(hsv,(7,3),1/9)               #Reduce noise
         gray = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)       #Get a gray image
         mask = cv2.inRange(hsv,(0,97*255/100,60*255/100),(40,255,255))  #sets the color (HSV) range to detect
+        mask = cv2.dilate(mask,(3,3),iterations=1)
+        mask = cv2.erode(mask,(3,3),iterations=1)
         #mask2 = cv2.inRange(hsv,(20,20,20),(self.i,self.i,self.i))     #To detect the black bottles (not working, too much black)
         detect = cv2.bitwise_and(gray,gray,mask=mask)   #get only the detected pixels
         
@@ -63,6 +65,8 @@ class Bottle: #Checks if a bottle is on the view of the camera and send a topic 
             c=max(elements, key=cv2.contourArea)
             ((x, y), rayon)=cv2.minEnclosingCircle(c)  #Get the position of object in the frame
             if rayon>15:
+                self.objx = int(x)
+                self.objy = int(y)
                 cv2.circle(detect, (int(x), int(y)), int(rayon), color_infos, 2)
                 cv2.circle(detect, (int(x), int(y)), 5, color_infos, 10)
                 cv2.line(detect, (int(x), int(y)), (int(x)+150, int(y)), color_infos, 2)
