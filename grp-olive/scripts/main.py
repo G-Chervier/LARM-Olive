@@ -26,11 +26,7 @@ class Bottle: #Checks if a bottle is on the view of the camera and send a topic 
         self.detected = False #declaration of variable used if object detected
         self.countframes = 0 #count the frames an object has been detected
         self.allowdetection = True #allows detection
-        self.marker= Marker(
-                type=Marker.CUBE,
-                lifetime=rospy.Duration(0),
-                scale=Vector3(0.1, 0.1, 0.1),
-                color=ColorRGBA(0.0, 1.0, 0.0, 0.8))
+
 
     """
     function pixtoangle takes as parameter the frame and the X value of the detected object
@@ -39,8 +35,8 @@ class Bottle: #Checks if a bottle is on the view of the camera and send a topic 
     def pixtoangle(self, f,pix):
         ang = pix * CAMERA_ANGLE / f.shape[1] ##Calc angle from 0 to f.shape
         ang -= CAMERA_ANGLE/2 #Apply offset to set 0 in the middle
-        print("DBG : Angle = " + str(ang))
-        print("DBG : where x = "+ str(pix))
+        #print("DBG : Angle = " + str(ang))
+        #print("DBG : where x = "+ str(pix))
         return math.radians(-ang) #-ang is for the Y values
 
     def coords(self,img):
@@ -74,15 +70,16 @@ class Bottle: #Checks if a bottle is on the view of the camera and send a topic 
             ((x, y), rayon)=cv2.minEnclosingCircle(c)  #Get the position of object in the frame
             if rayon>15:
                 if self.allowdetection:
-                    self.objx = int(x)
-                    self.objy = int(y)
-                    self.countframes +=1
-                    self.detected=True
+                    self.objx = int(x)  # X of the object on the image
+                    self.objy = int(y)  # Y of the object on the image
+                    self.countframes +=1  #Add 1 to the number of successive frames the object has been detected
+                    self.detected=True  # sets a bool to True => An object has been detected (useful for avoiding errors of detection)
                 cv2.circle(frame, (int(x), int(y)), int(rayon), color_infos, 2)
                 cv2.circle(frame, (int(x), int(y)), 5, color_infos, 10)
                 cv2.line(frame, (int(x), int(y)), (int(x)+150, int(y)), color_infos, 2)
                 cv2.putText(frame, "Objet !!!", (int(x)+10, int(y) -10), cv2.FONT_HERSHEY_DUPLEX, 1, color_infos, 1, cv2.LINE_AA)
             else:
+                # if nothing detected, reset all the values. 
                 self.detected = False
                 self.allowdetection=True
                 self.countframes = 0
@@ -92,19 +89,24 @@ class Bottle: #Checks if a bottle is on the view of the camera and send a topic 
             cv2.destroyAllWindows()
 
     def publish(self, angle,d):
+        # Create our PoseStamped object of the detected bottle with the coordinates in 'base_footprint' in order to be converted for 'map'
+
         obj = PoseStamped()
         obj.header.frame_id="base_footprint"
-        print("DBG : d = " + str(d))
+        #print("DBG : d = " + str(d))
         obj.pose.position.y= d * math.sin(angle)
         obj.pose.position.x= d * math.cos(angle)
         obj.pose.position.z = 0
         obj.pose.orientation = Quaternion()
-        print("DBG : Obj")
-        print(obj)
+        #print("DBG : Obj")
+        #print(obj)
         self.pub2.publish(obj)
 
     def convert(self, obj):
-        print("Got an object")
+        # Convert the PoseStamped object and get the coordinates in 'map'
+        # then Publish a /bottle topic (Marker) with the coordinates. 
+
+        #print("Got an object")
         globalpos = self.tflistener.transformPose('map',obj)
         marker= Marker( #declaration of a marker
                 id =len(self.markerArray.markers)+1,
@@ -114,8 +116,8 @@ class Bottle: #Checks if a bottle is on the view of the camera and send a topic 
                 color=ColorRGBA(0.0, 1.0, 0.0, 0.8),
                 pose = globalpos.pose)
         marker.header.frame_id='map'
-        print("DBG : Marker")
-        print(marker)
+        #print("DBG : Marker")
+        #print(marker)
         self.markerArray.markers.append(marker)
         self.pub.publish(self.markerArray)
 
