@@ -13,7 +13,7 @@
 	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find grp-olive)/rviz/challenge3.rviz" />
 	
 	<node pkg="grp-olive" type="main.py" name="main" output="screen"></node>
-	<node pkg="grp-olive" type="move.py" name="main" output="screen"></node>
+	<!--node pkg="grp-olive" type="move.py" name="main" output="screen"></node-->
 
 	<!-- Kobuki base -->
 	<arg name="urdf_file" default="$(find xacro)/xacro '$(find tbot_description)/urdf/tbot.urdf.xacro'" />
