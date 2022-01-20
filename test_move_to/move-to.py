@@ -15,6 +15,7 @@ class myNode:
     
     def callback(self, goal):
         rospy.loginfo("I Got a goal : ")
+        print(goal)
         self.local_goal= self.tfListener.transformPose("/base_footprint", goal)
         self.callback2()
 

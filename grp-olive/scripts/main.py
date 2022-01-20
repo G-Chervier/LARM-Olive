@@ -17,7 +17,7 @@ class Bottle: #Checks if a bottle is on the view of the camera and send a topic 
     def __init__(self):
         self.odom = rospy.Subscriber("odom",Odometry,self.getPose)
         self.scan = rospy.Subscriber("scan",LaserScan,self.callbackLaser)
-        self.sub = rospy.Subscriber("camera/color/image_raw",Image,self.detection)
+        self.sub = rospy.Subscriber("camera/rgb/image_raw",Image,self.detection)
         self.sub2 = rospy.Subscriber("camera/depth/image_rect_raw",Image,self.coords)
         self.pub = rospy.Publisher('bottle',Marker, queue_size=5)
         #dirname = os.path.dirname(__file__)
@@ -71,7 +71,6 @@ class Bottle: #Checks if a bottle is on the view of the camera and send a topic 
                 cv2.circle(detect, (int(x), int(y)), 5, color_infos, 10)
                 cv2.line(detect, (int(x), int(y)), (int(x)+150, int(y)), color_infos, 2)
                 cv2.putText(detect, "Objet !!!", (int(x)+10, int(y) -10), cv2.FONT_HERSHEY_DUPLEX, 1, color_infos, 1, cv2.LINE_AA)
-
         #cv2.putText(hsv, str(self.i), (10, 30), cv2.FONT_HERSHEY_DUPLEX, 1, (255,0,0), 1, cv2.LINE_AA)
         cv2.imshow('frame', hsv)
         cv2.imshow('detected',detect)
