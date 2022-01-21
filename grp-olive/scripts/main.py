@@ -16,7 +16,7 @@ class Bottle: #Checks if a bottle is on the view of the camera and send a topic 
     def __init__(self):
         self.tflistener = tf.TransformListener()
         self.sub = rospy.Subscriber("camera/color/image_raw",Image,self.detection)
-        self.sub2 = rospy.Subscriber("camera/depth/camera_info",Image,self.coords)
+        self.sub2 = rospy.Subscriber("camera/aligned_depth_to_color/image_raw",Image,self.coords)
         self.pub = rospy.Publisher('bottle',MarkerArray, queue_size=1)
         self.pub2 = rospy.Publisher("bottle_in_base_footprint", PoseStamped, queue_size=1)
         self.sub3 = rospy.Subscriber("bottle_in_base_footprint",PoseStamped,self.convert)
@@ -43,6 +43,7 @@ class Bottle: #Checks if a bottle is on the view of the camera and send a topic 
     def coords(self,img):
         bridge = CvBridge()
         frame = bridge.imgmsg_to_cv2(img,desired_encoding="passthrough") #convert the image from topic sent to list of distances by pixel
+        print("DBG : Iamhere")
         if self.detected and self.countframes>10:
             self.detected=False
             self.allowdetection=False
@@ -50,7 +51,7 @@ class Bottle: #Checks if a bottle is on the view of the camera and send a topic 
             if(math.isnan(frame[self.objy,self.objx])):
                 self.allowdetection=True
             else:
-                self.publish(self.pixtoangle(frame, self.objx),frame[self.objy,self.objx])
+                self.publish(self.pixtoangle(frame, self.objx),frame[self.objx,self.objy])
 
 
     def detection(self,img):
