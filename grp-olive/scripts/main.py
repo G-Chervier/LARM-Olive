@@ -33,6 +33,7 @@ class Bottle: #Checks if a bottle is on the view of the camera and send a topic 
     then return the measured angle in the 'base_footprint' frame
     """
     def pixtoangle(self, f,pix):
+        pix = pix/1000 #convert pix from mm to m
         ang = pix * CAMERA_ANGLE / f.shape[1] ##Calc angle from 0 to f.shape
         ang -= CAMERA_ANGLE/2 #Apply offset to set 0 in the middle
         print("DBG : Angle = " + str(ang))
