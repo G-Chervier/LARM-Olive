@@ -47,10 +47,10 @@ class Bottle: #Checks if a bottle is on the view of the camera and send a topic 
             self.detected=False
             self.allowdetection=False
             
-            if(math.isnan(frame[self.objx,self.objy])):
+            if(math.isnan(frame[self.objy,self.objx])):
                 self.allowdetection=True
             else:
-                self.publish(self.pixtoangle(frame, self.objx),frame[self.objx,self.objy]/1000)
+                self.publish(self.pixtoangle(frame, self.objx),frame[self.objy,self.objx]/1000)
 
 
     def detection(self,img):
