@@ -34,7 +34,7 @@ def turn_left():
         isTurningl = True
         countTurning +=1
         print("Turning left") 
-        vitessex = 0.07
+        vitessex = 0
         vitessez = radians(90)
 
 def turn_right():
@@ -43,7 +43,7 @@ def turn_right():
         countTurning +=1
         isTurningr
         print("Turning right")
-        vitessex = 0.07
+        vitessex = 0
         vitessez = -radians(90)
 
 def move_forward():
