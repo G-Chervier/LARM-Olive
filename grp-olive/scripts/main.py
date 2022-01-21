@@ -16,7 +16,7 @@ class Bottle: #Checks if a bottle is on the view of the camera and send a topic 
     def __init__(self):
         self.tflistener = tf.TransformListener()
         self.sub = rospy.Subscriber("camera/color/image_raw",Image,self.detection)
-        self.sub2 = rospy.Subscriber("camera/depth/image_rect_raw",Image,self.coords)
+        self.sub2 = rospy.Subscriber("camera/depth/camera_info",Image,self.coords)
         self.pub = rospy.Publisher('bottle',MarkerArray, queue_size=1)
         self.pub2 = rospy.Publisher("bottle_in_base_footprint", PoseStamped, queue_size=1)
         self.sub3 = rospy.Subscriber("bottle_in_base_footprint",PoseStamped,self.convert)
@@ -84,7 +84,7 @@ class Bottle: #Checks if a bottle is on the view of the camera and send a topic 
                 self.detected = False
                 self.allowdetection=True
                 self.countframes = 0
-        cv2.imshow('frame', frame)
+        #cv2.imshow('frame', frame)
         #cv2.imshow('detected',detect)
         if cv2.waitKey(1)&0xFF==ord('q'):
             cv2.destroyAllWindows()
