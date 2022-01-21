@@ -7,7 +7,7 @@ from geometry_msgs.msg import Twist
 from sensor_msgs.msg import LaserScan
 
 DIST_LASER_ROBOT = 0.5
-FRONT_ANGLE = 90
+FRONT_ANGLE = 30
 isTurningr = False
 isTurningl = False
 countTurning = 0
@@ -34,7 +34,7 @@ def turn_left():
         isTurningl = True
         countTurning +=1
         print("Turning left") 
-        vitessex = 0
+        vitessex = 0.05
         vitessez = radians(90)
 
 def turn_right():
@@ -43,7 +43,7 @@ def turn_right():
         countTurning +=1
         isTurningr
         print("Turning right")
-        vitessex = 0
+        vitessex = 0.05
         vitessez = -radians(90)
 
 def move_forward():
