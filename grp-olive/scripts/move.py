@@ -7,18 +7,18 @@ from sensor_msgs.msg import LaserScan
 
 class Brain:
     def __init__(self, verbose = True):
-        self.commandPublisher = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
+        self.commandPublisher = rospy.Publisher('/mobile_base/commands/velocity', Twist, queue_size=10)
         self.cmd = Twist()
         self.verbose = verbose
 
-        self.vitesse = 2
+        self.vitesse = 0.1
 
         self.isTurning = False
         self.turningCount = 0
         self.maxTurning = 30
 
         rospy.init_node('move', anonymous=True)
-        rospy.Subscriber("/scan", LaserScan, self.scanner)
+        rospy.Subscriber("scan", LaserScan, self.scanner)
         rospy.Timer(rospy.Duration(0.1), self.run, oneshot=False )
     
     def getROI(self, data):
@@ -31,7 +31,7 @@ class Brain:
 
 
     def shouldTurn(self, roi):
-        return min(roi) < 2
+        return min(roi) < 0.3
 
     def handleTurning(self):
         if(self.isTurning):

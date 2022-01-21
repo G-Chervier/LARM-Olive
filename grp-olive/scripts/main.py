@@ -58,7 +58,7 @@ class Bottle: #Checks if a bottle is on the view of the camera and send a topic 
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)        #Conert from BRG to HSV
         hsv = cv2.GaussianBlur(hsv,(7,3),1/9)               #Reduce noise
         gray = cv2.cvtColor(frame,cv2.COLOR_BGR2GRAY)       #Get a gray image
-        mask = cv2.inRange(hsv,(0,97*255/100,60*255/100),(40,255,255))  #sets the color (HSV) range to detect
+        mask = cv2.inRange(hsv,(0,97*255/100,60*255/100),(60,255,255))  #sets the color (HSV) range to detect
         mask = cv2.dilate(mask,(3,3),iterations=1)
         mask = cv2.erode(mask,(3,3),iterations=1)
         #mask2 = cv2.inRange(hsv,(20,20,20),(self.i,self.i,self.i))     #To detect the black bottles (not working, too much black)
@@ -83,8 +83,8 @@ class Bottle: #Checks if a bottle is on the view of the camera and send a topic 
                 self.detected = False
                 self.allowdetection=True
                 self.countframes = 0
-        #cv2.imshow('frame', frame)
-        cv2.imshow('detected',detect)
+        cv2.imshow('frame', frame)
+        #cv2.imshow('detected',detect)
         if cv2.waitKey(1)&0xFF==ord('q'):
             cv2.destroyAllWindows()
 
