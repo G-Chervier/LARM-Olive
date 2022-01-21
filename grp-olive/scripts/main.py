@@ -35,8 +35,9 @@ class Bottle: #Checks if a bottle is on the view of the camera and send a topic 
     def pixtoangle(self, f,pix):
         ang = pix * CAMERA_ANGLE / f.shape[1] ##Calc angle from 0 to f.shape
         ang -= CAMERA_ANGLE/2 #Apply offset to set 0 in the middle
-        #print("DBG : Angle = " + str(ang))
-        #print("DBG : where x = "+ str(pix))
+        print("DBG : Angle = " + str(ang))
+        print("DBG : where x = "+ str(pix))
+        print("DBG : Shape" +str(f.shape))
         return math.radians(-ang) #-ang is for the Y values
 
     def coords(self,img):

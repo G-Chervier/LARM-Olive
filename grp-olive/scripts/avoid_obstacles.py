@@ -7,7 +7,7 @@ from geometry_msgs.msg import Twist
 from sensor_msgs.msg import LaserScan
 
 DIST_LASER_ROBOT = 0.5
-FRONT_ANGLE = 20
+FRONT_ANGLE = 90
 isTurningr = False
 isTurningl = False
 countTurning = 0
@@ -92,11 +92,11 @@ def interpret_scan(data):
                 obstaclesleft.append(aPoint)
             '''
         angle+= data.angle_increment
-    rospy.loginfo( str(
-        [ [ round(p[0], 2), round(p[1], 2) ] for p in  obstacles[0:10] ] 
-    ) + " ... " + str(
-        [ [ round(p[0], 2), round(p[1], 2) ] for p in  obstacles[-10:-1] ] 
-    ) )
+    # rospy.loginfo( str(
+    #     [ [ round(p[0], 2), round(p[1], 2) ] for p in  obstacles[0:10] ] 
+    # ) + " ... " + str(
+    #     [ [ round(p[0], 2), round(p[1], 2) ] for p in  obstacles[-10:-1] ] 
+    # ) )
     #if obstacle forward
     if(any([(value[0]<DIST_LASER_ROBOT) for value in obstacles])) :
         #check if nothing on the left, and if something, go right 
