@@ -84,7 +84,7 @@ class Bottle: #Checks if a bottle is on the view of the camera and send a topic 
                 self.detected = False
                 self.allowdetection=True
                 self.countframes = 0
-        #cv2.imshow('frame', frame)
+        cv2.imshow('frame', frame)
         #cv2.imshow('detected',detect)
         if cv2.waitKey(1)&0xFF==ord('q'):
             cv2.destroyAllWindows()
