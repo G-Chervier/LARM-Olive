@@ -19,6 +19,7 @@ class Bottle: #Checks if a bottle is on the view of the camera and send a topic 
         self.sub2 = rospy.Subscriber("camera/aligned_depth_to_color/image_raw",Image,self.coords)
         self.pub = rospy.Publisher('bottle',MarkerArray, queue_size=1)
         self.pub2 = rospy.Publisher("bottle_in_base_footprint", PoseStamped, queue_size=1)
+        self.pub3 = rospy.Publisher('imgObject',Image,queue_size =1)
         self.sub3 = rospy.Subscriber("bottle_in_base_footprint",PoseStamped,self.convert)
         self.markerArray = MarkerArray() #List of the markers detected
         self.objx = 0 #declaration of X detected object in the frame
@@ -43,7 +44,6 @@ class Bottle: #Checks if a bottle is on the view of the camera and send a topic 
     def coords(self,img):
         bridge = CvBridge()
         frame = bridge.imgmsg_to_cv2(img,desired_encoding="passthrough") #convert the image from topic sent to list of distances by pixel
-        print("DBG : Iamhere")
         if self.detected and self.countframes>10:
             self.detected=False
             self.allowdetection=False
@@ -86,6 +86,8 @@ class Bottle: #Checks if a bottle is on the view of the camera and send a topic 
                 self.allowdetection=True
                 self.countframes = 0
         cv2.imshow('frame', frame)
+        imgToSend = bridge.cv2_to_imgmsg(frame,encoding="passthrough")
+        self.pub3.publish(imgToSend)
         #cv2.imshow('detected',detect)
         if cv2.waitKey(1)&0xFF==ord('q'):
             cv2.destroyAllWindows()
