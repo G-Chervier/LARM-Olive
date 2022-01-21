@@ -6,7 +6,7 @@ import numpy as np
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import LaserScan
 
-DIST_LASER_ROBOT = 0.7
+DIST_LASER_ROBOT = 0.35
 FRONT_ANGLE = 30
 isTurningr = False
 isTurningl = False
@@ -34,7 +34,7 @@ def turn_left():
         isTurningl = True
         countTurning +=1
         print("Turning left") 
-        vitessex = 0.1
+        vitessex = 0.07
         vitessez = radians(90)
 
 def turn_right():
@@ -43,13 +43,13 @@ def turn_right():
         countTurning +=1
         isTurningr
         print("Turning right")
-        vitessex = 0.1
+        vitessex = 0.07
         vitessez = -radians(90)
 
 def move_forward():
     global vitessex, vitessez
     print("Moving forward")
-    vitessex = 0.3
+    vitessex = 0.2
     vitessez = 0
 
 def myhook():
