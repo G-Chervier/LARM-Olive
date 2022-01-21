@@ -8,6 +8,9 @@ from sensor_msgs.msg import LaserScan
 
 DIST_LASER_ROBOT = 0.5
 FRONT_ANGLE = 20
+isTurningr = False
+isTurningl = False
+countTurning = 0
 # Initialize ROS::node
 rospy.init_node('move', anonymous=True)
 
@@ -26,16 +29,22 @@ def move_command():
     commandPublisher.publish(cmd)
 
 def turn_left():
-    global vitessex, vitessez
-    print("Turning left") 
-    vitessex = 0
-    vitessez = radians(90)
+    global vitessex, vitessez, isTurningr,isTurningl,countTurning
+    if not(isTurningr) or countTurning == 0:
+        isTurningl = True
+        countTurning +=1
+        print("Turning left") 
+        vitessex = 0
+        vitessez = radians(90)
 
 def turn_right():
-    global vitessex, vitessez
-    print("Turning right")
-    vitessex = 0
-    vitessez = -radians(90)
+    global vitessex, vitessez,isTurningl,isTurningr, countTurning
+    if not(isTurningl) or countTurning == 0:
+        countTurning +=1
+        isTurningr
+        print("Turning right")
+        vitessex = 0
+        vitessez = -radians(90)
 
 def move_forward():
     global vitessex, vitessez
@@ -52,7 +61,7 @@ def myhook():
 
 # Publish velocity commandes:
 def interpret_scan(data):
-    global vitessex, vitessez
+    global vitessex, vitessez,isTurningr, isTurningl, countTurning
     rospy.loginfo('I get scans')
     obstacles= []
     #obstaclesleft= []
@@ -96,6 +105,9 @@ def interpret_scan(data):
         else:
             turn_left()
     else: #if no obstacle, move forward
+        isTurningr = False
+        isTurningl = False
+        countTurning = 0
         move_forward()
     
     move_command()
