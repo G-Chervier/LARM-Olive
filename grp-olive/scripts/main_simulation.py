@@ -32,8 +32,8 @@ class Bottle: #Checks if a bottle is on the view of the camera and send a topic 
     def pixtoangle(self, f,pix):
         ang = pix * CAMERA_ANGLE / f.shape[1] ##Calc angle from 0 to f.shape
         ang -= CAMERA_ANGLE/2 #Apply offset to set 0 in the middle
-        print("DBG : Angle = " + str(ang))
-        print("DBG : where x = "+ str(pix))
+        # print("DBG : Angle = " + str(ang))
+        # print("DBG : where x = "+ str(pix))
         return math.radians(-ang)
 
     def coords(self,img):
@@ -70,34 +70,34 @@ class Bottle: #Checks if a bottle is on the view of the camera and send a topic 
                     self.objy = int(y)
                     self.countframes +=1
                     self.detected=True
-                cv2.circle(frame, (int(x), int(y)), int(rayon), color_infos, 2)
-                cv2.circle(frame, (int(x), int(y)), 5, color_infos, 10)
-                cv2.line(frame, (int(x), int(y)), (int(x)+150, int(y)), color_infos, 2)
-                cv2.putText(frame, "Bottle !", (int(x)+10, int(y) -10), cv2.FONT_HERSHEY_DUPLEX, 1, color_infos, 1, cv2.LINE_AA)
+                # cv2.circle(frame, (int(x), int(y)), int(rayon), color_infos, 2)
+                # cv2.circle(frame, (int(x), int(y)), 5, color_infos, 10)
+                # cv2.line(frame, (int(x), int(y)), (int(x)+150, int(y)), color_infos, 2)
+                # cv2.putText(frame, "Bottle !", (int(x)+10, int(y) -10), cv2.FONT_HERSHEY_DUPLEX, 1, color_infos, 1, cv2.LINE_AA)
         else:
             self.detected = False
             self.allowdetection=True
             self.countframes = 0
-        cv2.circle(hsv, (self.objx, self.objy), 5, color_infos, 10)
-        cv2.imshow('frame', frame)
-        cv2.imshow('detected',detect)
+        #cv2.circle(hsv, (self.objx, self.objy), 5, color_infos, 10)
+        #cv2.imshow('frame', frame)
+        #cv2.imshow('detected',detect)
         if cv2.waitKey(1)&0xFF==ord('q'):
             cv2.destroyAllWindows()
 
     def publish(self, angle,d):
         obj = PoseStamped()
         obj.header.frame_id="base_footprint"
-        print("DBG : d = " + str(d))
+        # print("DBG : d = " + str(d))
         obj.pose.position.y= d * math.sin(angle)
         obj.pose.position.x= d * math.cos(angle)
         obj.pose.position.z = 0
         obj.pose.orientation = Quaternion()
-        print("DBG : Obj")
-        print(obj)
+        # print("DBG : Obj")
+        # print(obj)
         self.pub2.publish(obj)
 
     def convert(self, obj):
-        print("Got an object")
+        # print("Got an object")
         globalpos = self.tflistener.transformPose('map',obj)
         marker= Marker( #declaration of a marker
                 id =len(self.markerArray.markers)+1,
@@ -107,8 +107,8 @@ class Bottle: #Checks if a bottle is on the view of the camera and send a topic 
                 color=ColorRGBA(0.0, 1.0, 0.0, 0.8),
                 pose = globalpos.pose)
         marker.header.frame_id='map'
-        print("DBG : Marker")
-        print(marker)
+        # print("DBG : Marker")
+        # print(marker)
         self.markerArray.markers.append(marker)
         self.pub.publish(self.markerArray)
 
