@@ -177,7 +177,7 @@ La fonction convert est active dès que le topic défini précédemment est comm
 
 ## Lien vidéo
 
-La vidéo de présentation du projet est disponible à cette adresse: 
+La vidéo de présentation du projet est disponible à cette adresse: https://parisnanterrefr-my.sharepoint.com/:v:/g/personal/guillaume_chervier_parisnanterre_fr/EYBBRfFe3JZBu-PhTFI0guABl8uTC0aTvwlZnk9wBBHiDQ?e=JPGKhn
 
 ## Perspectives d'amélioration
  - La détection des bouteilles a été optimisée mais reste toujours améliorable, en mixant des techniques par exemple (detection par hsv puis kmeans)
